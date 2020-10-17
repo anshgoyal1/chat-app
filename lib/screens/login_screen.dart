@@ -1,21 +1,24 @@
-import 'package:flutter/material.dart';
-import 'package:flash_chat/components/rounded_button.dart';
-import 'package:flash_chat/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'chat_screen.dart';
+import 'package:flash_chat/constants.dart';
+import 'package:flash_chat/screens/chat_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
+import 'package:flash_chat/Utilities/Buttons.dart';
+import 'package:flutter/rendering.dart';
+
 class LoginScreen extends StatefulWidget {
-  static const String id = 'login_screen';
+  static String id = 'login_screen';
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  bool showSpinner = false;
-  final _auth = FirebaseAuth.instance;
+class _LoginScreenState extends State<LoginScreen>
+    with SingleTickerProviderStateMixin {
   String email;
   String password;
+  bool showSpinner = false;
+  final _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
             children: <Widget>[
               Flexible(
                 child: Hero(
-                  tag: 'logo',
+                  tag: 'loco',
                   child: Container(
                     height: 200.0,
                     child: Image.asset('images/logo.png'),
@@ -42,33 +45,35 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 48.0,
               ),
               TextField(
-                keyboardType: TextInputType.emailAddress,
-                textAlign: TextAlign.center,
-                onChanged: (value) {
-                  email = value;
-                },
-                decoration:
-                    kTextFieldDecoration.copyWith(hintText: 'Enter your email'),
-              ),
+                  keyboardType: TextInputType.emailAddress,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black),
+                  onChanged: (value) {
+                    //Do something with the user input.
+                    email = value;
+                    // print(email);
+                  },
+                  decoration: buildInputDecoration('Enter your email')),
               SizedBox(
                 height: 8.0,
               ),
               TextField(
                 obscureText: true,
                 textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black),
                 onChanged: (value) {
+                  //Do something with the user input.
                   password = value;
                 },
-                decoration: kTextFieldDecoration.copyWith(
-                    hintText: 'Enter your password'),
+                decoration: buildInputDecoration('Enter a Password'),
               ),
               SizedBox(
-                height: 24.0,
+                height: 28.0,
               ),
-              RoundedButton(
-                title: 'Log In',
-                colour: Colors.lightBlueAccent,
-                onPressed: () async {
+              Buttons(
+                buttonName: 'Log in',
+                onPress: () async {
+                  FocusScope.of(context).requestFocus(new FocusNode());
                   setState(() {
                     showSpinner = true;
                   });
@@ -78,7 +83,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     if (user != null) {
                       Navigator.pushNamed(context, ChatScreen.id);
                     }
-
                     setState(() {
                       showSpinner = false;
                     });
@@ -86,7 +90,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     print(e);
                   }
                 },
-              ),
+                color: Colors.lightBlueAccent,
+              )
             ],
           ),
         ),
